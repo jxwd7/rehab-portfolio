@@ -14,6 +14,7 @@ import {
   useReducedMotion,
   useScroll,
   useTransform,
+  useMotionTemplate,
 } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -285,14 +286,8 @@ function TrustStrip() {
 }
 
 function PearlJourney() {
-  const ref = useRef<HTMLElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start center", "end 80%"],
-  });
-
   return (
-    <section className="journey-section section-anchor" id="journey" ref={ref}>
+    <section className="journey-section section-anchor" id="journey">
       <div className="journey-intro">
         <Reveal>
           <p className="eyebrow">Your journey, gently held</p>
@@ -303,78 +298,42 @@ function PearlJourney() {
           </p>
         </Reveal>
       </div>
-      <div className="journey-scroll">
-        <div className="journey-sticky">
-          <img className="pearl-thread" src={asset("pearl-thread.png")} alt="" />
-          {siteContent.journey.map((step, index) => (
-            <JourneyPearl
-              key={step.title}
-              progress={scrollYProgress}
-              index={index}
-              title={step.title}
-              text={step.text}
-            />
-          ))}
-        </div>
+      <div className="journey-grid">
+        {siteContent.journey.map((step, index) => (
+          <JourneyPearl
+            key={step.title}
+            index={index}
+            title={step.title}
+            text={step.text}
+          />
+        ))}
       </div>
     </section>
   );
 }
 
 function JourneyPearl({
-  progress,
   index,
   title,
   text,
 }: {
-  progress: MotionValue<number>;
   index: number;
   title: string;
   text: string;
 }) {
-  const shouldReduceMotion = useReducedMotion();
-  // Space out the 4 pearls evenly so they appear one-by-one as the user scrolls
-  const start = index * 0.23;
-  const middle = start + 0.10;
-  const end = start + 0.22;
-  const y = useTransform(
-    progress,
-    [start, end],
-    shouldReduceMotion ? [0, 0] : [-80, 0],
-  );
-  const opacity = useTransform(
-    progress,
-    [start, middle],
-    [0, 1],
-  );
-  const scale = useTransform(
-    progress,
-    [start, end],
-    shouldReduceMotion ? [1, 1] : [0.85, 1],
-  );
-  const labelY = useTransform(
-    progress,
-    [middle, end],
-    shouldReduceMotion ? [0, 0] : [20, 0],
-  );
-  const labelOpacity = useTransform(
-    progress,
-    [middle, end],
-    [0, 1],
-  );
-
   return (
-    <motion.article
-      className={`journey-pearl journey-pearl-${index + 1}`}
-      style={{ y, opacity, scale }}
-    >
-      <img src={asset(`pearl-small-${String(index + 1).padStart(2, "0")}.png`)} alt="" />
-      <motion.div className="journey-card" style={{ y: labelY, opacity: labelOpacity }}>
-        <span>{index + 1}</span>
-        <h3>{title}</h3>
+    <Reveal className="journey-pearl">
+      <div className="pearl-art">
+        <img src={asset(`pearl-small-${String(index + 1).padStart(2, "0")}.png`)} alt="" />
+      </div>
+      <div className="journey-card">
+        <div className="card-header">
+          <span className="card-index">0{index + 1}</span>
+          <h3>{title}</h3>
+        </div>
         <p>{text}</p>
-      </motion.div>
-    </motion.article>
+      </div>
+    </Reveal>
   );
 }
 
