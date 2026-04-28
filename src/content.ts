@@ -87,13 +87,6 @@ export const siteContent = {
       duration: "50 mins",
       price: "$80",
     },
-    {
-      icon: "users",
-      title: "Couples Counselling",
-      description: "Strengthen connection, communication, and shared understanding.",
-      duration: "50 mins",
-      price: "$80",
-    },
   ],
   approach: [
     {
@@ -106,7 +99,7 @@ export const siteContent = {
     },
     {
       title: "Inclusive",
-      text: "Culturally sensitive support for adults and couples from diverse backgrounds.",
+      text: "Culturally sensitive support for adults from diverse backgrounds.",
     },
   ],
   about: {
