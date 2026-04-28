@@ -10,10 +10,13 @@
     "generate:assets": "python scripts/generate_assets.py"
   },
   "dependencies": {
+    "@netlify/functions": "^5.2.0",
+    "@supabase/supabase-js": "^2.105.0",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "resend": "^6.12.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",

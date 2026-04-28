@@ -9,12 +9,8 @@ import {
 } from "react";
 import {
   AnimatePresence,
-  MotionValue,
   motion,
   useReducedMotion,
-  useScroll,
-  useTransform,
-  useMotionTemplate,
 } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -32,7 +28,6 @@ import {
   Send,
   ShieldCheck,
   Sparkles,
-  Users,
   Waves,
   X,
 } from "lucide-react";
@@ -45,7 +40,6 @@ const serviceIcons: Record<string, LucideIcon> = {
   flower: Flower2,
   brain: Brain,
   leaf: Leaf,
-  users: Users,
 };
 
 const formInitialState = {
@@ -68,6 +62,7 @@ function scrollToHash(hash: string) {
 
 function App() {
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   return (
     <div className="site-shell">
@@ -82,8 +77,9 @@ function App() {
         <FAQ />
         <Contact onBook={() => setBookingOpen(true)} />
       </main>
-      <SiteFooter />
-      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
+      <SiteFooter onPrivacy={() => setPrivacyOpen(true)} />
+      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} onPrivacy={() => setPrivacyOpen(true)} />
+      <PrivacyModal open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
     </div>
   );
 }
@@ -508,7 +504,7 @@ function Contact({ onBook }: { onBook: () => void }) {
   );
 }
 
-function BookingModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+function BookingModal({ open, onClose, onPrivacy }: { open: boolean; onClose: () => void; onPrivacy: () => void }) {
   return (
     <AnimatePresence>
       {open ? (
@@ -535,7 +531,7 @@ function BookingModal({ open, onClose }: { open: boolean; onClose: () => void })
               <p className="eyebrow">Booking request</p>
               <h2>Tell me what support would feel helpful.</h2>
             </div>
-            <BookingForm />
+            <BookingForm onPrivacy={onPrivacy} />
           </motion.div>
         </motion.div>
       ) : null}
@@ -543,11 +539,18 @@ function BookingModal({ open, onClose }: { open: boolean; onClose: () => void })
   );
 }
 
-function BookingForm() {
+function BookingForm({ onPrivacy }: { onPrivacy?: () => void }) {
   const [form, setForm] = useState<FormState>(formInitialState);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState("");
   const emailIsValid = useMemo(() => /\S+@\S+\.\S+/.test(form.email), [form.email]);
+
+  // Bot protection: track when the form was loaded
+  const formLoadedAt = useRef(Date.now());
+  // Honeypot value
+  const [honeypot, setHoneypot] = useState("");
 
   function updateField<K extends keyof FormState>(field: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -561,8 +564,11 @@ function BookingForm() {
     updateField(name as keyof FormState, value as never);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setServerError("");
+
+    // Client-side validation
     const nextErrors: FormErrors = {};
     if (!form.name.trim()) nextErrors.name = "Please enter your name.";
     if (!form.email.trim()) nextErrors.email = "Please enter your email.";
@@ -571,8 +577,42 @@ function BookingForm() {
     if (!form.consent) nextErrors.consent = "Please confirm permission to be contacted.";
 
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length === 0) {
+    if (Object.keys(nextErrors).length > 0) return;
+
+    // Submit to backend
+    setSubmitting(true);
+    try {
+      const response = await fetch("/.netlify/functions/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          _hp: honeypot,
+          _t: formLoadedAt.current,
+        }),
+      });
+
+      if (response.status === 429) {
+        setServerError("Too many requests. Please wait a few minutes and try again.");
+        return;
+      }
+
+      if (response.status === 422) {
+        const data = await response.json();
+        setErrors(data.errors ?? {});
+        return;
+      }
+
+      if (!response.ok) {
+        setServerError("Something went wrong. Please try again or contact us directly.");
+        return;
+      }
+
       setSubmitted(true);
+    } catch {
+      setServerError("Could not connect. Please check your internet and try again.");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -586,10 +626,10 @@ function BookingForm() {
         <CheckCircle2 size={44} />
         <h3>Thank you.</h3>
         <p>
-          This preview has captured the booking request flow. A secure form service can
-          be connected when the site is ready to go live.
+          Your booking request has been received. Rehab will be in touch within 1–2
+          business days via your preferred contact method.
         </p>
-        <button className="ghost-button" type="button" onClick={() => setSubmitted(false)}>
+        <button className="ghost-button" type="button" onClick={() => { setSubmitted(false); formLoadedAt.current = Date.now(); }}>
           Send another request
         </button>
       </motion.div>
@@ -598,6 +638,20 @@ function BookingForm() {
 
   return (
     <form className="booking-form" onSubmit={handleSubmit} noValidate>
+      {/* Honeypot — invisible to real users, bots will fill it */}
+      <div className="hp-field" aria-hidden="true">
+        <label>
+          Leave this empty
+          <input
+            name="_hp"
+            tabIndex={-1}
+            autoComplete="off"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+          />
+        </label>
+      </div>
+
       <div className="form-row">
         <label>
           Name
@@ -670,14 +724,121 @@ function BookingForm() {
           onChange={(event) => updateField("consent", event.target.checked)}
           aria-invalid={Boolean(errors.consent)}
         />
-        <span>I consent to being contacted about this enquiry.</span>
+        <span>
+          I consent to being contacted about this enquiry. See our{" "}
+          <button type="button" className="text-link inline-link" onClick={onPrivacy}>
+            Privacy Collection Notice
+          </button>.
+        </span>
       </label>
       {errors.consent ? <span className="field-error">{errors.consent}</span> : null}
-      <button className="primary-button form-submit" type="submit">
-        <Send size={18} />
-        Send Request
+
+      {serverError ? (
+        <div className="server-error" role="alert">
+          <ShieldCheck size={16} />
+          {serverError}
+        </div>
+      ) : null}
+
+      <button className="primary-button form-submit" type="submit" disabled={submitting}>
+        {submitting ? (
+          <>
+            <span className="spinner" />
+            Sending…
+          </>
+        ) : (
+          <>
+            <Send size={18} />
+            Send Request
+          </>
+        )}
       </button>
     </form>
+  );
+}
+
+function PrivacyModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  return (
+    <AnimatePresence>
+      {open ? (
+        <motion.div
+          className="modal-layer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Privacy collection notice"
+        >
+          <motion.div
+            className="booking-modal privacy-modal"
+            initial={{ y: 40, opacity: 0, scale: 0.96 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 24, opacity: 0, scale: 0.98 }}
+            transition={{ type: "spring", damping: 24, stiffness: 250 }}
+          >
+            <button className="close-button" type="button" onClick={onClose} aria-label="Close">
+              <X size={22} />
+            </button>
+            <div className="modal-intro">
+              <p className="eyebrow">Privacy</p>
+              <h2>Privacy Collection Notice</h2>
+            </div>
+            <div className="privacy-content">
+              <h3>What information we collect</h3>
+              <p>
+                When you submit a booking request, we collect your name, email address,
+                phone number (if provided), preferred service, preferred contact method,
+                and the message you share with us.
+              </p>
+
+              <h3>Why we collect it</h3>
+              <p>
+                Your information is collected solely to respond to your enquiry through
+                your preferred contact method and to arrange counselling services.
+              </p>
+
+              <h3>How we store it</h3>
+              <p>
+                Your data is stored securely using industry-standard encryption. We use
+                Supabase (hosted in Australia where available) with row-level security
+                enabled. All data is transmitted over HTTPS.
+              </p>
+
+              <h3>Who has access</h3>
+              <p>
+                Only Rehab (the counsellor and practice owner) has access to your
+                booking requests. Your information is never shared with third parties
+                for marketing or any other purpose.
+              </p>
+
+              <h3>Your rights</h3>
+              <p>
+                Under the Australian Privacy Principles, you have the right to:
+              </p>
+              <ul>
+                <li>Request access to your personal information</li>
+                <li>Request correction of inaccurate information</li>
+                <li>Request deletion of your personal information</li>
+                <li>Withdraw your consent at any time</li>
+              </ul>
+              <p>
+                To exercise any of these rights, please contact us at{" "}
+                <a href={`mailto:${siteContent.brand.email}`}>{siteContent.brand.email}</a>.
+              </p>
+
+              <h3>Data retention</h3>
+              <p>
+                Booking request data is retained only for as long as necessary to
+                respond to your enquiry. If you become a client, records will be
+                managed in accordance with the ACA Code of Ethics and relevant
+                legislation.
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }
 
@@ -697,7 +858,7 @@ function Reveal({ children, className = "" }: PropsWithChildren<{ className?: st
   );
 }
 
-function SiteFooter() {
+function SiteFooter({ onPrivacy }: { onPrivacy: () => void }) {
   return (
     <footer className="site-footer">
       <div className="footer-brand">
@@ -713,6 +874,7 @@ function SiteFooter() {
             {item.label}
           </button>
         ))}
+        <button type="button" onClick={onPrivacy}>Privacy</button>
       </div>
       <p>This site is for general information and is not a replacement for professional advice.</p>
     </footer>
