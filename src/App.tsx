@@ -419,6 +419,16 @@ function AboutLearning({ onBook }: { onBook: () => void }) {
               </li>
             ))}
           </ul>
+          <div className="credential-badge">
+            <img
+              src={asset("aca-member-level-2-transparent.png")}
+              alt="Australian Counselling Association Member Level 2 badge"
+            />
+            <span>
+              <strong>ACA Member Level 2</strong>
+              <small>{siteContent.brand.registration}</small>
+            </span>
+          </div>
           <button className="ghost-button" type="button" onClick={onBook}>
             <CalendarDays size={18} />
             More about working together
@@ -916,6 +926,13 @@ function SiteFooter({ onPrivacy }: { onPrivacy: () => void }) {
           <strong>{siteContent.brand.name}</strong>
           <span>{siteContent.brand.tagline}</span>
         </div>
+      </div>
+      <div className="footer-cert">
+        <img
+          src={asset("aca-member-level-2-transparent.png")}
+          alt="Australian Counselling Association Member Level 2 badge"
+        />
+        <span>ACA Member Level 2</span>
       </div>
       <div className="footer-links">
         {siteContent.nav.slice(1).map((item) => (

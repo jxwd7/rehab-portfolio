@@ -771,6 +771,43 @@ h1 span {
   margin-top: 2px;
 }
 
+.credential-badge {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 28px 0 24px;
+  padding: 14px 18px;
+  border: 1px solid rgba(23, 63, 67, 0.12);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.64);
+  box-shadow: 0 14px 34px rgba(23, 63, 67, 0.08);
+}
+
+.credential-badge img {
+  width: 132px;
+  max-width: 38vw;
+}
+
+.credential-badge span,
+.credential-badge strong,
+.credential-badge small {
+  display: block;
+}
+
+.credential-badge strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.credential-badge small {
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
 .telehealth-section {
   padding: 96px 5vw;
   background:
@@ -1198,7 +1235,7 @@ details p {
 
 .site-footer {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto auto 1fr auto;
   align-items: center;
   gap: 26px;
   padding: 30px 5vw;
@@ -1225,6 +1262,25 @@ details p {
   color: var(--ink);
   font-family: "Cormorant Garamond", serif;
   font-size: 1.6rem;
+}
+
+.footer-cert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+}
+
+.footer-cert img {
+  width: 86px;
+}
+
+.footer-cert span {
+  max-width: 92px;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .footer-links {
@@ -1315,6 +1371,7 @@ details p {
   }
 
   .footer-brand,
+  .footer-cert,
   .footer-links {
     justify-content: center;
   }
