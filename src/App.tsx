@@ -74,8 +74,9 @@ function App() {
         <Services onBook={() => setBookingOpen(true)} />
         <Approach />
         <AboutLearning onBook={() => setBookingOpen(true)} />
+        <TelehealthNotice />
         <FAQ />
-        <Contact onBook={() => setBookingOpen(true)} />
+        <Contact onBook={() => setBookingOpen(true)} onPrivacy={() => setPrivacyOpen(true)} />
       </main>
       <SiteFooter onPrivacy={() => setPrivacyOpen(true)} />
       <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} onPrivacy={() => setPrivacyOpen(true)} />
@@ -143,7 +144,7 @@ function SiteHeader({ onBook }: { onBook: () => void }) {
       </nav>
       <button className="nav-cta" type="button" onClick={onBook}>
         <CalendarDays size={18} />
-        <span>Book</span>
+        <span>Enquire</span>
       </button>
     </header>
   );
@@ -151,11 +152,10 @@ function SiteHeader({ onBook }: { onBook: () => void }) {
 
 function Hero({ onBook }: { onBook: () => void }) {
   const shouldReduceMotion = useReducedMotion();
-  const words = siteContent.hero.headlineScript.split("");
 
   return (
     <section className="hero-section section-anchor" id="home">
-      <img className="hero-watercolor" src={asset("watercolor-hero-sea.png")} alt="" />
+      <img className="hero-watercolor" src={asset("hero-blue-gradient-hd.jpg")} alt="" />
       <div className="hero-veil" />
       <div className="hero-content">
         <motion.div
@@ -167,19 +167,7 @@ function Hero({ onBook }: { onBook: () => void }) {
           <p className="eyebrow">{siteContent.hero.eyebrow}</p>
           <h1>
             <span>{siteContent.hero.headlineStart}</span>
-            <span className="script-line" aria-label={siteContent.hero.headlineScript}>
-              {words.map((char, index) => (
-                <motion.span
-                  aria-hidden="true"
-                  key={`${char}-${index}`}
-                  initial={shouldReduceMotion ? false : { opacity: 0, y: 18, rotate: -3 }}
-                  animate={{ opacity: 1, y: 0, rotate: 0 }}
-                  transition={{ delay: 0.45 + index * 0.035, duration: 0.42 }}
-                >
-                  {char === " " ? "\u00A0" : char}
-                </motion.span>
-              ))}
-            </span>
+            <span className="script-line">{siteContent.hero.headlineScript}</span>
           </h1>
           <p className="hero-body">{siteContent.hero.body}</p>
           <div className="hero-actions">
@@ -286,11 +274,11 @@ function PearlJourney() {
     <section className="journey-section section-anchor" id="journey">
       <div className="journey-intro">
         <Reveal>
-          <p className="eyebrow">Your journey, gently held</p>
-          <h2>Each pearl reveals a part of the work.</h2>
+          <p className="eyebrow">What to expect</p>
+          <h2>A clear process before counselling begins.</h2>
           <p>
-            Growth is not forced. It is noticed, protected, and slowly gathered into
-            something strong.
+            The work is collaborative, structured, and paced according to the
+            individual, so you know what the next step involves.
           </p>
         </Reveal>
       </div>
@@ -341,8 +329,8 @@ function Services({ onBook }: { onBook: () => void }) {
       <img className="seaweed seaweed-right" src={asset("seaweed-right.png")} alt="" />
       <div className="section-heading services-heading">
         <Reveal>
-          <p className="eyebrow">How I can support you</p>
-          <h2>Counselling that meets you where you are.</h2>
+          <p className="eyebrow">Areas of support</p>
+          <h2>Clinical counselling for emotional and situational challenges.</h2>
         </Reveal>
       </div>
       <div className="service-grid">
@@ -370,7 +358,7 @@ function Services({ onBook }: { onBook: () => void }) {
       <div className="center-action">
         <button className="primary-button" type="button" onClick={onBook}>
           <CalendarDays size={18} />
-          Book a Session
+          Request a Session
         </button>
       </div>
     </section>
@@ -383,10 +371,11 @@ function Approach() {
       <div className="approach-copy">
         <Reveal>
           <p className="eyebrow">The approach</p>
-          <h2>A steady place to breathe, reflect, and begin again.</h2>
+          <h2>Structured, flexible counselling grounded in clinical integrity.</h2>
           <p>
-            Therapy here is spacious, collaborative, and grounded. You are not rushed
-            toward a version of healing that does not fit you.
+            Sessions support clients to understand patterns, process emotional
+            experiences, and develop practical strategies that are realistic and
+            sustainable over time.
           </p>
         </Reveal>
       </div>
@@ -418,9 +407,6 @@ function AboutLearning({ onBook }: { onBook: () => void }) {
         <img src={asset("learning-pearl.png")} alt="" />
       </div>
       <div className="about-panel">
-        <Reveal className="portrait-wrap">
-          <img src={asset("portrait-illustration.png")} alt="Illustrated portrait of Rehab" />
-        </Reveal>
         <Reveal className="about-copy">
           <p className="eyebrow">About Rehab</p>
           <h2>{siteContent.about.title}</h2>
@@ -439,6 +425,31 @@ function AboutLearning({ onBook }: { onBook: () => void }) {
           </button>
         </Reveal>
       </div>
+    </section>
+  );
+}
+
+function TelehealthNotice() {
+  return (
+    <section className="telehealth-section">
+      <Reveal className="telehealth-card">
+        <div className="telehealth-icon">
+          <Monitor size={28} />
+        </div>
+        <div>
+          <p className="eyebrow">Telehealth care</p>
+          <h2>{siteContent.telehealth.title}</h2>
+          <p>{siteContent.telehealth.body}</p>
+          <ul>
+            {siteContent.telehealth.details.map((detail) => (
+              <li key={detail}>
+                <ShieldCheck size={18} />
+                {detail}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Reveal>
     </section>
   );
 }
@@ -462,23 +473,23 @@ function FAQ() {
   );
 }
 
-function Contact({ onBook }: { onBook: () => void }) {
+function Contact({ onBook, onPrivacy }: { onBook: () => void; onPrivacy: () => void }) {
   return (
     <section className="contact-section section-anchor" id="contact">
       <div className="contact-banner">
         <Reveal>
-          <p className="eyebrow">Begin gently</p>
+          <p className="eyebrow">Begin with clarity</p>
           <h2>{siteContent.contact.title}</h2>
           <p>{siteContent.contact.body}</p>
           <button className="primary-button" type="button" onClick={onBook}>
             <CalendarDays size={18} />
-            Open Booking Request
+            Open Enquiry Form
           </button>
         </Reveal>
       </div>
       <div className="contact-grid">
         <Reveal className="contact-details">
-          <h3>Let's connect</h3>
+          <h3>Contact Pearls of Peace</h3>
           <a href={`mailto:${siteContent.brand.email}`}>
             <Mail size={18} />
             {siteContent.brand.email}
@@ -489,7 +500,7 @@ function Contact({ onBook }: { onBook: () => void }) {
           </a>
           <p>
             <Monitor size={18} />
-            Telehealth Australia-wide
+            Secure video or telephone counselling
           </p>
           <p>
             <ShieldCheck size={18} />
@@ -497,7 +508,7 @@ function Contact({ onBook }: { onBook: () => void }) {
           </p>
         </Reveal>
         <Reveal className="contact-form-card">
-          <BookingForm />
+          <BookingForm onPrivacy={onPrivacy} />
         </Reveal>
       </div>
     </section>
@@ -515,7 +526,7 @@ function BookingModal({ open, onClose, onPrivacy }: { open: boolean; onClose: ()
           exit={{ opacity: 0 }}
           role="dialog"
           aria-modal="true"
-          aria-label="Booking request"
+          aria-label="Counselling enquiry"
         >
           <motion.div
             className="booking-modal"
@@ -528,8 +539,8 @@ function BookingModal({ open, onClose, onPrivacy }: { open: boolean; onClose: ()
               <X size={22} />
             </button>
             <div className="modal-intro">
-              <p className="eyebrow">Booking request</p>
-              <h2>Tell me what support would feel helpful.</h2>
+              <p className="eyebrow">Counselling enquiry</p>
+              <h2>Share what you are seeking support with.</h2>
             </div>
             <BookingForm onPrivacy={onPrivacy} />
           </motion.div>
@@ -626,7 +637,7 @@ function BookingForm({ onPrivacy }: { onPrivacy?: () => void }) {
         <CheckCircle2 size={44} />
         <h3>Thank you.</h3>
         <p>
-          Your booking request has been received. Rehab will be in touch within 1–2
+          Your enquiry has been received. Rehab will be in touch within 1-2
           business days via your preferred contact method.
         </p>
         <button className="ghost-button" type="button" onClick={() => { setSubmitted(false); formLoadedAt.current = Date.now(); }}>
@@ -638,7 +649,7 @@ function BookingForm({ onPrivacy }: { onPrivacy?: () => void }) {
 
   return (
     <form className="booking-form" onSubmit={handleSubmit} noValidate>
-      {/* Honeypot — invisible to real users, bots will fill it */}
+      {/* Honeypot: invisible to real users, bots will fill it. */}
       <div className="hp-field" aria-hidden="true">
         <label>
           Leave this empty
@@ -688,7 +699,7 @@ function BookingForm({ onPrivacy }: { onPrivacy?: () => void }) {
           />
         </label>
         <label>
-          Preferred service
+          Area of support
           <select name="service" value={form.service} onChange={handleTextChange}>
             {siteContent.services.map((service) => (
               <option key={service.title}>{service.title}</option>
@@ -744,7 +755,7 @@ function BookingForm({ onPrivacy }: { onPrivacy?: () => void }) {
         {submitting ? (
           <>
             <span className="spinner" />
-            Sending…
+            Sending...
           </>
         ) : (
           <>
@@ -785,54 +796,92 @@ function PrivacyModal({ open, onClose }: { open: boolean; onClose: () => void })
               <h2>Privacy Collection Notice</h2>
             </div>
             <div className="privacy-content">
+              <p className="policy-date">Last updated: 29 April 2026</p>
+
+              <h3>Who this notice covers</h3>
+              <p>
+                This notice explains how Pearls of Peace collects and handles personal
+                information when you use this website, send an enquiry, request a session,
+                or attend telehealth counselling with Rehab.
+              </p>
+
               <h3>What information we collect</h3>
               <p>
-                When you submit a booking request, we collect your name, email address,
-                phone number (if provided), preferred service, preferred contact method,
-                and the message you share with us.
+                We may collect your name, email address, phone number, selected area of support,
+                preferred contact method, enquiry message, consent confirmation, appointment
+                details, and information you choose to share during counselling. The website
+                may also collect technical information such as your IP address, time of
+                submission, and basic security logs to help prevent spam and misuse.
               </p>
 
               <h3>Why we collect it</h3>
               <p>
-                Your information is collected solely to respond to your enquiry through
-                your preferred contact method and to arrange counselling services.
+                We use this information to respond to enquiries, arrange and provide
+                counselling services, manage client records, communicate with you, meet
+                professional and legal obligations, support client safety, and protect the
+                website from spam or security abuse.
               </p>
 
-              <h3>How we store it</h3>
+              <h3>Telehealth consultations</h3>
               <p>
-                Your data is stored securely using industry-standard encryption. We use
-                Supabase (hosted in Australia where available) with row-level security
-                enabled. All data is transmitted over HTTPS.
+                Telehealth sessions are carried out by Rehab from a private professional
+                setting in Australia by secure video or phone. You are asked to join from a
+                quiet, private place where you feel safe to speak. At the start of a session,
+                Rehab may confirm your current location and an emergency contact so support
+                can be arranged if there is a safety concern.
+              </p>
+              <p>
+                Sessions are not recorded unless this is discussed with you first and you
+                give clear consent. Standard confidentiality applies to telehealth sessions,
+                subject to usual limits such as serious risk of harm, legal requirements, or
+                professional obligations.
               </p>
 
-              <h3>Who has access</h3>
+              <h3>Service providers</h3>
               <p>
-                Only Rehab (the counsellor and practice owner) has access to your
-                booking requests. Your information is never shared with third parties
-                for marketing or any other purpose.
+                Enquiries are processed through Netlify Functions, may be stored in
+                Supabase, and may generate an email notification through Resend. These
+                providers process information only for website, database, email, security,
+                and hosting purposes.
+              </p>
+              <p>
+                If a new third-party service is added later, such as Calendly for scheduling
+                or a video platform for appointments, this privacy statement should be
+                updated before that service goes live to explain what the provider collects,
+                where data may be stored, and how it is used.
               </p>
 
-              <h3>Your rights</h3>
+              <h3>Disclosure and overseas processing</h3>
               <p>
-                Under the Australian Privacy Principles, you have the right to:
+                Personal information is not sold or used for third-party marketing. It may
+                be disclosed to service providers, with your consent, where required or
+                authorised by law, or where necessary to reduce a serious risk to health,
+                safety, or wellbeing. Some technology providers may process or store data
+                outside Australia depending on their account and infrastructure settings.
               </p>
-              <ul>
-                <li>Request access to your personal information</li>
-                <li>Request correction of inaccurate information</li>
-                <li>Request deletion of your personal information</li>
-                <li>Withdraw your consent at any time</li>
-              </ul>
+
+              <h3>How we protect information</h3>
               <p>
-                To exercise any of these rights, please contact us at{" "}
+                Information submitted through the website is transmitted over HTTPS.
+                Access should be limited to authorised practice users, with strong account
+                passwords, multi-factor authentication where available, and regular review of
+                vendor settings. Client records should be kept only for as long as required
+                for clinical, legal, ethical, and business purposes.
+              </p>
+
+              <h3>Your rights and choices</h3>
+              <p>
+                You can ask to access or correct personal information held about you, make a
+                privacy complaint, withdraw consent for non-essential contact, or ask how
+                your information is being handled. To do this, contact{" "}
                 <a href={`mailto:${siteContent.brand.email}`}>{siteContent.brand.email}</a>.
               </p>
 
-              <h3>Data retention</h3>
+              <h3>Urgent support</h3>
               <p>
-                Booking request data is retained only for as long as necessary to
-                respond to your enquiry. If you become a client, records will be
-                managed in accordance with the ACA Code of Ethics and relevant
-                legislation.
+                This website form is not monitored for crisis support. If you are in
+                immediate danger, call 000. If you need urgent mental health support in
+                Australia, contact Lifeline on 13 11 14 or your local crisis service.
               </p>
             </div>
           </motion.div>
