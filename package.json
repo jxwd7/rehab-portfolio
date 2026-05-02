@@ -10,6 +10,7 @@
     "generate:assets": "python scripts/generate_assets.py"
   },
   "dependencies": {
+    "@calcom/embed-react": "^1.5.3",
     "@netlify/functions": "^5.2.0",
     "@supabase/supabase-js": "^2.105.0",
     "framer-motion": "^11.18.2",

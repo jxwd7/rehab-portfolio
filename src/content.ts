@@ -23,8 +23,22 @@ export const siteContent = {
     headlineScript: "with care.",
     body:
       "Trauma-informed, person-centred counselling with Rehab Khan for anxiety, depression, emotional distress, grief, trauma-related responses, and significant life transitions.",
-    primaryCta: "Request a Session",
+    primaryCta: "Book a Session",
     secondaryCta: "Ask a Question",
+  },
+  booking: {
+    calLink: "pearls.of.peace",
+    url: "https://cal.com/pearls.of.peace",
+    eyebrow: "Online booking",
+    title: "Book a telehealth consultation",
+    body:
+      "Choose a time that works for you. Bookings are handled through Cal.com, and you can still use the enquiry form below if you have a question before scheduling.",
+    fallbackCta: "Open calendar in a new tab",
+    details: [
+      "Secure video or telephone counselling",
+      "Join from a quiet, private place where you feel safe to speak",
+      "This is not a crisis service; call 000 if you are in immediate danger",
+    ],
   },
   trustSignals: [
     {
@@ -209,7 +223,7 @@ export const siteContent = {
   contact: {
     title: "Start with a confidential enquiry.",
     body:
-      "Share a few details about what you are seeking support with and Rehab will respond by your preferred contact method. Please avoid sending urgent or crisis information through this form.",
+      "Use this form for questions or suitability enquiries before booking. Please avoid sending urgent or crisis information through this form.",
     preferredMethods: ["Email", "Phone", "Either"],
   },
 };

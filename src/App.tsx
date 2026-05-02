@@ -19,6 +19,7 @@ import {
   CalendarDays,
   CheckCircle2,
   ChevronDown,
+  ExternalLink,
   Flower2,
   HeartHandshake,
   Leaf,
@@ -31,6 +32,7 @@ import {
   Waves,
   X,
 } from "lucide-react";
+import { getCalApi } from "@calcom/embed-react";
 import { siteContent } from "./content";
 
 const asset = (name: string) => `/assets/${name}`;
@@ -61,25 +63,25 @@ function scrollToHash(hash: string) {
 }
 
 function App() {
-  const [bookingOpen, setBookingOpen] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+  const handleBook = () => scrollToHash("#booking");
 
   return (
     <div className="site-shell">
-      <SiteHeader onBook={() => setBookingOpen(true)} />
+      <SiteHeader onBook={handleBook} />
       <main>
-        <Hero onBook={() => setBookingOpen(true)} />
+        <Hero onBook={handleBook} />
         <TrustStrip />
         <PearlJourney />
-        <Services onBook={() => setBookingOpen(true)} />
+        <Services onBook={handleBook} />
         <Approach />
-        <AboutLearning onBook={() => setBookingOpen(true)} />
+        <AboutLearning onBook={handleBook} />
         <TelehealthNotice />
         <FAQ />
-        <Contact onBook={() => setBookingOpen(true)} onPrivacy={() => setPrivacyOpen(true)} />
+        <BookingSection />
+        <Contact onBook={handleBook} onPrivacy={() => setPrivacyOpen(true)} />
       </main>
       <SiteFooter onPrivacy={() => setPrivacyOpen(true)} />
-      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} onPrivacy={() => setPrivacyOpen(true)} />
       <PrivacyModal open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
     </div>
   );
@@ -144,7 +146,7 @@ function SiteHeader({ onBook }: { onBook: () => void }) {
       </nav>
       <button className="nav-cta" type="button" onClick={onBook}>
         <CalendarDays size={18} />
-        <span>Enquire</span>
+        <span>Book</span>
       </button>
     </header>
   );
@@ -358,7 +360,7 @@ function Services({ onBook }: { onBook: () => void }) {
       <div className="center-action">
         <button className="primary-button" type="button" onClick={onBook}>
           <CalendarDays size={18} />
-          Request a Session
+          Book a Session
         </button>
       </div>
     </section>
@@ -431,7 +433,7 @@ function AboutLearning({ onBook }: { onBook: () => void }) {
           </div>
           <button className="ghost-button" type="button" onClick={onBook}>
             <CalendarDays size={18} />
-            More about working together
+            Book a Session
           </button>
         </Reveal>
       </div>
@@ -483,6 +485,70 @@ function FAQ() {
   );
 }
 
+function BookingSection() {
+  const calContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const container = calContainerRef.current;
+    if (!container) return;
+    container.innerHTML = "";
+
+    (async () => {
+      const cal = await getCalApi({ namespace: "pearls-of-peace-booking" });
+      if (!mounted) return;
+      cal("inline", {
+        elementOrSelector: container,
+        calLink: siteContent.booking.calLink,
+        config: {
+          layout: "month_view",
+        },
+      });
+    })();
+
+    return () => {
+      mounted = false;
+      container.innerHTML = "";
+    };
+  }, []);
+
+  return (
+    <section className="booking-section section-anchor" id="booking">
+      <div className="booking-shell">
+        <Reveal className="booking-context">
+          <p className="eyebrow">{siteContent.booking.eyebrow}</p>
+          <h2>{siteContent.booking.title}</h2>
+          <p>{siteContent.booking.body}</p>
+          <ul>
+            {siteContent.booking.details.map((detail) => (
+              <li key={detail}>
+                <ShieldCheck size={18} />
+                {detail}
+              </li>
+            ))}
+          </ul>
+          <a
+            className="ghost-button booking-fallback"
+            href={siteContent.booking.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <ExternalLink size={18} />
+            {siteContent.booking.fallbackCta}
+          </a>
+        </Reveal>
+        <Reveal className="cal-embed-shell">
+          <div className="cal-embed-header">
+            <CalendarDays size={20} />
+            <span>Choose a time that works for you</span>
+          </div>
+          <div className="cal-embed-frame" ref={calContainerRef} />
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 function Contact({ onBook, onPrivacy }: { onBook: () => void; onPrivacy: () => void }) {
   return (
     <section className="contact-section section-anchor" id="contact">
@@ -493,7 +559,7 @@ function Contact({ onBook, onPrivacy }: { onBook: () => void; onPrivacy: () => v
           <p>{siteContent.contact.body}</p>
           <button className="primary-button" type="button" onClick={onBook}>
             <CalendarDays size={18} />
-            Open Enquiry Form
+            Book a Session
           </button>
         </Reveal>
       </div>
@@ -522,41 +588,6 @@ function Contact({ onBook, onPrivacy }: { onBook: () => void; onPrivacy: () => v
         </Reveal>
       </div>
     </section>
-  );
-}
-
-function BookingModal({ open, onClose, onPrivacy }: { open: boolean; onClose: () => void; onPrivacy: () => void }) {
-  return (
-    <AnimatePresence>
-      {open ? (
-        <motion.div
-          className="modal-layer"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Counselling enquiry"
-        >
-          <motion.div
-            className="booking-modal"
-            initial={{ y: 40, opacity: 0, scale: 0.96 }}
-            animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 24, opacity: 0, scale: 0.98 }}
-            transition={{ type: "spring", damping: 24, stiffness: 250 }}
-          >
-            <button className="close-button" type="button" onClick={onClose} aria-label="Close">
-              <X size={22} />
-            </button>
-            <div className="modal-intro">
-              <p className="eyebrow">Counselling enquiry</p>
-              <h2>Share what you are seeking support with.</h2>
-            </div>
-            <BookingForm onPrivacy={onPrivacy} />
-          </motion.div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
   );
 }
 
@@ -811,7 +842,7 @@ function PrivacyModal({ open, onClose }: { open: boolean; onClose: () => void })
               <h3>Who this notice covers</h3>
               <p>
                 This notice explains how Pearls of Peace collects and handles personal
-                information when you use this website, send an enquiry, request a session,
+                information when you use this website, send an enquiry, book a session,
                 or attend telehealth counselling with Rehab.
               </p>
 
@@ -819,9 +850,11 @@ function PrivacyModal({ open, onClose }: { open: boolean; onClose: () => void })
               <p>
                 We may collect your name, email address, phone number, selected area of support,
                 preferred contact method, enquiry message, consent confirmation, appointment
-                details, and information you choose to share during counselling. The website
-                may also collect technical information such as your IP address, time of
-                submission, and basic security logs to help prevent spam and misuse.
+                details, and information you choose to share during counselling. If you book
+                through Cal.com, the booking details you enter into the calendar are processed
+                by Cal.com. The website may also collect technical information such as your IP
+                address, time of submission, and basic security logs to help prevent spam and
+                misuse.
               </p>
 
               <h3>Why we collect it</h3>
@@ -849,16 +882,15 @@ function PrivacyModal({ open, onClose }: { open: boolean; onClose: () => void })
 
               <h3>Service providers</h3>
               <p>
-                Enquiries are processed through Netlify Functions, may be stored in
-                Supabase, and may generate an email notification through Resend. These
-                providers process information only for website, database, email, security,
-                and hosting purposes.
+                Online bookings are handled through Cal.com. Information entered into the
+                calendar is processed by Cal.com for scheduling and related booking purposes
+                and may be subject to Cal.com's own privacy terms.
               </p>
               <p>
-                If a new third-party service is added later, such as Calendly for scheduling
-                or a video platform for appointments, this privacy statement should be
-                updated before that service goes live to explain what the provider collects,
-                where data may be stored, and how it is used.
+                Enquiries submitted through the contact form are processed through Netlify
+                Functions, may be stored in Supabase, and may generate an email notification
+                through Resend. These providers process information only for website,
+                database, email, security, and hosting purposes.
               </p>
 
               <h3>Disclosure and overseas processing</h3>
