@@ -2,6 +2,9 @@ import {
   ChangeEvent,
   FormEvent,
   PropsWithChildren,
+  Suspense,
+  lazy,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -12,16 +15,27 @@ import {
   motion,
   useReducedMotion,
 } from "framer-motion";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import {
+  Baby,
   BookOpen,
   Brain,
   CalendarDays,
   CheckCircle2,
   ChevronDown,
+  Flame,
   ExternalLink,
   Flower2,
+  Globe2,
   HeartHandshake,
+  HeartPulse,
   Leaf,
   Mail,
   Monitor,
@@ -29,6 +43,8 @@ import {
   Send,
   ShieldCheck,
   Sparkles,
+  UserRound,
+  UsersRound,
   Waves,
   X,
 } from "lucide-react";
@@ -36,12 +52,20 @@ import { getCalApi } from "@calcom/embed-react";
 import { siteContent } from "./content";
 
 const asset = (name: string) => `/assets/${name}`;
+const AboutPage = lazy(() => import("./pages/AboutPage"));
 
 const serviceIcons: Record<string, LucideIcon> = {
   heart: HeartHandshake,
+  heartPulse: HeartPulse,
   flower: Flower2,
   brain: Brain,
   leaf: Leaf,
+  sparkles: Sparkles,
+  user: UserRound,
+  flame: Flame,
+  baby: Baby,
+  users: UsersRound,
+  globe: Globe2,
 };
 
 const formInitialState = {
@@ -63,35 +87,136 @@ function scrollToHash(hash: string) {
 }
 
 function App() {
+  return (
+    <BrowserRouter>
+      <RoutedApp />
+    </BrowserRouter>
+  );
+}
+
+function RoutedApp() {
   const [privacyOpen, setPrivacyOpen] = useState(false);
-  const handleBook = () => scrollToHash("#booking");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navigateHomeHash = useCallback(
+    (hash: string) => {
+      if (location.pathname === "/") {
+        scrollToHash(hash);
+        return;
+      }
+
+      navigate("/", { state: { scrollTo: hash } });
+    },
+    [location.pathname, navigate],
+  );
+
+  const navigateAbout = useCallback(() => {
+    if (location.pathname === "/about") {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      return;
+    }
+
+    navigate("/about");
+  }, [location.pathname, navigate]);
+
+  useEffect(() => {
+    const state = location.state as { scrollTo?: string } | null;
+    if (location.pathname !== "/" || !state?.scrollTo) return;
+
+    const handle = window.setTimeout(() => {
+      scrollToHash(state.scrollTo!);
+      navigate(".", { replace: true, state: null });
+    }, 80);
+
+    return () => window.clearTimeout(handle);
+  }, [location.pathname, location.state, navigate]);
+
+  const handleBook = () => navigateHomeHash("#booking");
 
   return (
     <div className="site-shell">
-      <SiteHeader onBook={handleBook} />
-      <main>
-        <Hero onBook={handleBook} />
-        <TrustStrip />
-        <PearlJourney />
-        <Services onBook={handleBook} />
-        <Approach />
-        <AboutLearning onBook={handleBook} />
-        <TelehealthNotice />
-        <FAQ />
-        <BookingSection />
-        <Contact onBook={handleBook} onPrivacy={() => setPrivacyOpen(true)} />
-      </main>
-      <SiteFooter onPrivacy={() => setPrivacyOpen(true)} />
+      <SiteHeader
+        onBook={handleBook}
+        onNavigateAbout={navigateAbout}
+        onNavigateHash={navigateHomeHash}
+      />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <HomePage
+              onBook={handleBook}
+              onPrivacy={() => setPrivacyOpen(true)}
+            />
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <Suspense fallback={<div className="route-loading">Loading About...</div>}>
+              <AboutPage
+                onBook={handleBook}
+                onHome={() => navigateHomeHash("#home")}
+              />
+            </Suspense>
+          }
+        />
+      </Routes>
+      <SiteFooter
+        onNavigateAbout={navigateAbout}
+        onNavigateHash={navigateHomeHash}
+        onPrivacy={() => setPrivacyOpen(true)}
+      />
       <PrivacyModal open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
     </div>
   );
 }
 
-function SiteHeader({ onBook }: { onBook: () => void }) {
+function HomePage({
+  onBook,
+  onPrivacy,
+}: {
+  onBook: () => void;
+  onPrivacy: () => void;
+}) {
+  return (
+    <main>
+      <Hero onBook={onBook} />
+      <TrustStrip />
+      <PearlJourney />
+      <Services onBook={onBook} />
+      <Approach />
+      <AboutLearning onBook={onBook} />
+      <TelehealthNotice />
+      <FAQ />
+      <BookingSection />
+      <Contact onBook={onBook} onPrivacy={onPrivacy} />
+    </main>
+  );
+}
+
+function SiteHeader({
+  onBook,
+  onNavigateAbout,
+  onNavigateHash,
+}: {
+  onBook: () => void;
+  onNavigateAbout: () => void;
+  onNavigateHash: (hash: string) => void;
+}) {
   const [activeHref, setActiveHref] = useState("#home");
+  const location = useLocation();
 
   useEffect(() => {
-    const sectionIds = siteContent.nav.map((item) => item.href.slice(1));
+    if (location.pathname === "/about") {
+      setActiveHref("/about");
+      return;
+    }
+
+    const sectionIds = siteContent.nav
+      .filter((item) => item.href.startsWith("#"))
+      .map((item) => item.href.slice(1));
 
     function updateActiveSection() {
       const checkpoint = window.scrollY + 170;
@@ -113,14 +238,14 @@ function SiteHeader({ onBook }: { onBook: () => void }) {
     updateActiveSection();
     window.addEventListener("scroll", updateActiveSection, { passive: true });
     return () => window.removeEventListener("scroll", updateActiveSection);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <header className="site-header">
       <button
         className="brand-mark"
         type="button"
-        onClick={() => scrollToHash("#home")}
+        onClick={() => onNavigateHash("#home")}
         aria-label="Go to home"
       >
         <img src={asset("brand-shell.png")} alt="" />
@@ -137,7 +262,11 @@ function SiteHeader({ onBook }: { onBook: () => void }) {
             type="button"
             onClick={(event) => {
               event.currentTarget.blur();
-              scrollToHash(item.href);
+              if (item.href === "/about") {
+                onNavigateAbout();
+                return;
+              }
+              onNavigateHash(item.href);
             }}
           >
             {item.label}
@@ -331,8 +460,8 @@ function Services({ onBook }: { onBook: () => void }) {
       <img className="seaweed seaweed-right" src={asset("seaweed-right.png")} alt="" />
       <div className="section-heading services-heading">
         <Reveal>
-          <p className="eyebrow">Areas of support</p>
-          <h2>Clinical counselling for emotional and situational challenges.</h2>
+          <p className="eyebrow">Services</p>
+          <h2>Ways I Can Support You</h2>
         </Reveal>
       </div>
       <div className="service-grid">
@@ -414,7 +543,7 @@ function AboutLearning({ onBook }: { onBook: () => void }) {
           <h2>{siteContent.about.title}</h2>
           <p>{siteContent.about.body}</p>
           <ul>
-            {siteContent.about.credentials.map((credential) => (
+            {siteContent.about.credentials.slice(0, 3).map((credential) => (
               <li key={credential}>
                 <CheckCircle2 size={18} />
                 {credential}
@@ -431,9 +560,10 @@ function AboutLearning({ onBook }: { onBook: () => void }) {
               <small>{siteContent.brand.registration}</small>
             </span>
           </div>
+          <p className="about-cta-subtext">{siteContent.aboutPage.hero.ctaSubtext}</p>
           <button className="ghost-button" type="button" onClick={onBook}>
             <CalendarDays size={18} />
-            Book a Session
+            {siteContent.aboutPage.hero.cta}
           </button>
         </Reveal>
       </div>
@@ -949,7 +1079,15 @@ function Reveal({ children, className = "" }: PropsWithChildren<{ className?: st
   );
 }
 
-function SiteFooter({ onPrivacy }: { onPrivacy: () => void }) {
+function SiteFooter({
+  onNavigateAbout,
+  onNavigateHash,
+  onPrivacy,
+}: {
+  onNavigateAbout: () => void;
+  onNavigateHash: (hash: string) => void;
+  onPrivacy: () => void;
+}) {
   return (
     <footer className="site-footer">
       <div className="footer-brand">
@@ -968,7 +1106,17 @@ function SiteFooter({ onPrivacy }: { onPrivacy: () => void }) {
       </div>
       <div className="footer-links">
         {siteContent.nav.slice(1).map((item) => (
-          <button key={item.href} type="button" onClick={() => scrollToHash(item.href)}>
+          <button
+            key={item.href}
+            type="button"
+            onClick={() => {
+              if (item.href === "/about") {
+                onNavigateAbout();
+                return;
+              }
+              onNavigateHash(item.href);
+            }}
+          >
             {item.label}
           </button>
         ))}

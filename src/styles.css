@@ -1,5 +1,6 @@
 @import url("./design-tokens.css");
 @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
 
 :root {
   color-scheme: light;
@@ -57,6 +58,17 @@ a {
 
 .section-anchor {
   scroll-margin-top: 88px;
+}
+
+.route-loading {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 120px 24px;
+  color: var(--text-primary);
+  background: var(--surface-base);
+  font-family: var(--font-heading);
+  font-size: 2rem;
 }
 
 .site-header {
@@ -1413,6 +1425,349 @@ details p {
   text-align: right;
 }
 
+.about-cta-subtext {
+  margin: 24px 0 8px;
+  color: var(--text-secondary);
+  font-family: var(--font-script);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.about-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 86% 8%, rgba(223, 170, 160, 0.24), transparent 25rem),
+    linear-gradient(180deg, #fffaf2 0%, #eef6f4 45%, #f7f2e7 100%);
+}
+
+.about-page-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 142px 5vw 86px;
+}
+
+.about-page-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.34;
+  background:
+    linear-gradient(180deg, rgba(255, 251, 243, 0.1), rgba(255, 251, 243, 0.86)),
+    url("/assets/paper-grain.png");
+  pointer-events: none;
+}
+
+.about-page-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.about-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 38px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: var(--weight-bold);
+}
+
+.about-page-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(280px, 420px);
+  gap: 42px;
+  align-items: end;
+}
+
+.about-page-hero-copy h1 {
+  max-width: 820px;
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: clamp(3.6rem, 8vw, 7.8rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0;
+  line-height: 0.9;
+}
+
+.about-page-hero-copy > p:not(.eyebrow) {
+  max-width: 670px;
+  margin: 26px 0 0;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.75;
+}
+
+.about-hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.about-hero-tags span {
+  border: 1px solid rgba(23, 63, 67, 0.14);
+  border-radius: 999px;
+  padding: 9px 13px;
+  background: rgba(255, 255, 255, 0.54);
+  color: var(--text-primary);
+  font-size: 0.86rem;
+  font-weight: var(--weight-bold);
+}
+
+.about-page-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin-top: 34px;
+}
+
+.about-page-cta > span {
+  color: var(--text-accent);
+  font-family: var(--font-script);
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.about-portrait-card {
+  position: relative;
+  overflow: hidden;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background:
+    linear-gradient(145deg, rgba(255, 251, 243, 0.92), rgba(255, 251, 243, 0.66)),
+    url("/assets/paper-grain.png");
+  box-shadow: var(--elev-3);
+}
+
+.about-portrait-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.about-portrait-card div {
+  display: grid;
+  gap: 4px;
+  padding: 18px 20px 20px;
+}
+
+.about-portrait-card strong {
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+}
+
+.about-portrait-card span {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.about-experience {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  padding: 72px 5vw 110px;
+  display: grid;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.05fr);
+  gap: 42px;
+  align-items: start;
+}
+
+.about-gallery-column {
+  min-width: 0;
+}
+
+.about-gallery-sticky {
+  position: sticky;
+  top: 118px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 8px;
+  min-height: 660px;
+  background:
+    radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.3), transparent 18rem),
+    linear-gradient(180deg, rgba(16, 61, 68, 0.9), rgba(10, 32, 36, 0.94));
+  box-shadow: 0 30px 90px rgba(21, 77, 85, 0.26);
+}
+
+.about-gallery-canvas {
+  width: 100%;
+  height: 660px;
+}
+
+.about-gallery-caption {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 11px 14px;
+  background: rgba(255, 251, 243, 0.12);
+  color: rgba(255, 251, 243, 0.86);
+  font-size: 0.9rem;
+  backdrop-filter: blur(14px);
+}
+
+.about-story-panels {
+  display: grid;
+  gap: 24px;
+}
+
+.about-story-card,
+.about-area-card,
+.about-areas-closing {
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background:
+    linear-gradient(145deg, rgba(255, 251, 243, 0.94), rgba(255, 251, 243, 0.78)),
+    url("/assets/paper-grain.png");
+  box-shadow: var(--elev-2);
+}
+
+.about-story-card {
+  padding: clamp(28px, 4vw, 48px);
+}
+
+.about-story-card h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.45rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.about-story-card strong {
+  display: block;
+  margin-top: 14px;
+  color: var(--text-accent);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.about-story-card p:not(.eyebrow) {
+  margin: 18px 0 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.78;
+}
+
+.about-areas-section {
+  position: relative;
+  padding: 104px 5vw 112px;
+  background:
+    linear-gradient(180deg, rgba(238, 246, 244, 0.6), rgba(255, 250, 242, 0.94)),
+    url("/assets/paper-grain.png");
+}
+
+.about-areas-section .section-heading p:not(.eyebrow) {
+  max-width: 760px;
+  margin: 14px auto 0;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.about-areas-grid {
+  width: min(1180px, 100%);
+  margin: 46px auto 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.about-area-card {
+  padding: 24px;
+}
+
+.about-area-card svg {
+  color: var(--text-accent);
+}
+
+.about-area-card h3 {
+  margin: 18px 0 10px;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  line-height: 1.05;
+}
+
+.about-area-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.62;
+}
+
+.about-areas-closing {
+  width: min(860px, 100%);
+  margin: 28px auto 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 22px 24px;
+  color: var(--text-secondary);
+}
+
+.about-areas-closing svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--text-accent);
+}
+
+.about-areas-closing p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.about-final-cta {
+  padding: 86px 5vw 106px;
+  text-align: center;
+  background:
+    linear-gradient(135deg, rgba(21, 77, 85, 0.96), rgba(20, 70, 79, 0.9)),
+    url("/assets/paper-grain.png");
+  color: #fffaf2;
+}
+
+.about-final-cta .eyebrow {
+  color: var(--color-gold-pale);
+}
+
+.about-final-cta h2 {
+  width: min(720px, 100%);
+  margin: 0 auto 26px;
+  color: #fffaf2;
+  font-family: var(--font-heading);
+  font-size: clamp(2.3rem, 5vw, 4.2rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.about-static-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+}
+
+.about-static-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 @media (max-width: 1060px) {
   .site-header {
     grid-template-columns: 1fr auto;
@@ -1425,9 +1780,29 @@ details p {
   .hero-content,
   .about-learning,
   .about-panel,
+  .about-page-hero-grid,
+  .about-experience,
   .booking-shell,
   .contact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .about-page-hero {
+    padding-top: 126px;
+  }
+
+  .about-portrait-card {
+    max-width: 420px;
+  }
+
+  .about-gallery-sticky {
+    position: relative;
+    top: auto;
+    min-height: auto;
+  }
+
+  .about-gallery-canvas {
+    height: 560px;
   }
 
   .hero-section {
@@ -1441,6 +1816,10 @@ details p {
   }
 
   .service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-areas-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1623,6 +2002,7 @@ details p {
   .services-section,
   .approach-section,
   .telehealth-section,
+  .about-areas-section,
   .booking-section,
   .faq-section {
     padding-top: 78px;
@@ -1632,8 +2012,46 @@ details p {
   .journey-sticky,
   .service-grid,
   .approach-grid,
+  .about-areas-grid,
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .about-page-hero {
+    padding: 106px 20px 68px;
+  }
+
+  .about-page-hero-copy h1 {
+    font-size: clamp(3rem, 13vw, 4.5rem);
+  }
+
+  .about-page-hero-copy > p:not(.eyebrow) {
+    font-size: 1rem;
+  }
+
+  .about-page-cta,
+  .about-areas-closing {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .about-experience {
+    padding: 48px 20px 78px;
+    gap: 24px;
+  }
+
+  .about-gallery-caption {
+    position: static;
+    margin: 0 14px 14px;
+  }
+
+  .about-story-card,
+  .about-area-card {
+    padding: 24px;
+  }
+
+  .about-final-cta {
+    padding: 72px 20px 84px;
   }
 
   .service-card-inner {

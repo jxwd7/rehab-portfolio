@@ -12,17 +12,25 @@
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",
     "@netlify/functions": "^5.2.0",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
     "@supabase/supabase-js": "^2.105.0",
     "framer-motion": "^11.18.2",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "resend": "^6.12.2"
+    "react-router-dom": "^7.14.2",
+    "resend": "^6.12.2",
+    "three": "^0.170.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.2.4",
+    "@types/node": "^25.6.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@types/three": "^0.170.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.2.4",
     "typescript": "^5.7.2",
     "vite": "^6.0.7"
   }

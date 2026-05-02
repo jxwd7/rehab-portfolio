@@ -10,7 +10,7 @@ export const siteContent = {
   nav: [
     { label: "Home", href: "#home" },
     { label: "Process", href: "#journey" },
-    { label: "About", href: "#about" },
+    { label: "About", href: "/about" },
     { label: "Support", href: "#services" },
     { label: "Approach", href: "#approach" },
     { label: "Resources", href: "#learning" },
@@ -74,60 +74,60 @@ export const siteContent = {
   ],
   services: [
     {
-      icon: "brain",
-      title: "Anxiety & Depression",
-      description: "Support for persistent worry, low mood, loss of motivation, emotional distress, and difficulty coping day to day.",
-      duration: "Counselling",
-      price: "Online",
+      icon: "sparkles",
+      title: "Initial Consultation",
+      description: "A free introductory conversation to clarify needs, fit, telehealth suitability, and next steps.",
+      duration: "Free 15-30 minutes",
+      price: "Free",
     },
     {
-      icon: "flower",
-      title: "Trauma-Related Responses",
-      description: "Care for the ongoing emotional impact of trauma, heightened reactivity, or difficulty feeling safe.",
-      duration: "Counselling",
-      price: "Online",
-    },
-    {
-      icon: "heart",
-      title: "Grief & Loss",
-      description: "Support for bereavement, complex grief, and grief that has not been openly acknowledged or supported.",
-      duration: "Counselling",
-      price: "Online",
-    },
-    {
-      icon: "leaf",
-      title: "Life Transitions",
-      description: "Counselling through adjustment, immigration, becoming a parent, empty nest experiences, ageing, retirement, or identity shifts.",
-      duration: "Counselling",
-      price: "Online",
-    },
-    {
-      icon: "brain",
-      title: "Stress & Overwhelm",
-      description: "Support for burnout, emotional exhaustion, competing demands, and difficulty finding steadiness.",
-      duration: "Counselling",
-      price: "Online",
+      icon: "user",
+      title: "Individual Therapy",
+      description: "Structured, person-centred counselling for emotional, psychological, and situational challenges.",
+      duration: "50 min",
+      price: "$80",
     },
     {
       icon: "heart",
-      title: "Emotional Regulation",
-      description: "Work with intense emotions, reactivity, anger, or moments of feeling out of control.",
-      duration: "Counselling",
-      price: "Online",
+      title: "Women’s Mental Health",
+      description: "Support through identity shifts, life transitions, parenthood, perimenopause, stress, and emotional wellbeing.",
+      duration: "50 min",
+      price: "$80",
     },
     {
       icon: "flower",
-      title: "Interpersonal Challenges",
-      description: "Explore communication difficulties, boundary setting, conflict, and recurring patterns within relationships.",
-      duration: "Counselling",
-      price: "Online",
+      title: "Grief & Trauma Therapy",
+      description: "Care for bereavement, complex grief, trauma-related responses, and the ongoing emotional impact of difficult experiences.",
+      duration: "50 min",
+      price: "$80",
+    },
+    {
+      icon: "flame",
+      title: "Emotional Regulation & Anger Support",
+      description: "Practical support for intense emotions, reactivity, anger, overwhelm, and moments of feeling out of control.",
+      duration: "50 min",
+      price: "$80",
     },
     {
       icon: "leaf",
-      title: "Self-Worth & Identity",
-      description: "Support for feelings of inadequacy, instability in sense of self, or uncertainty around personal direction.",
-      duration: "Counselling",
-      price: "Online",
+      title: "Adolescent Counselling",
+      description: "Developmentally aware support for adolescents navigating emotions, stress, identity, relationships, and adjustment.",
+      duration: "50 min",
+      price: "$80",
+    },
+    {
+      icon: "users",
+      title: "Parent Consultation & Support",
+      description: "Consultation for parents seeking clarity, emotional support, and practical strategies around family challenges.",
+      duration: "50 min",
+      price: "$80",
+    },
+    {
+      icon: "globe",
+      title: "Online Therapy (Worldwide)",
+      description: "Telehealth counselling delivered by secure video or telephone for clients who value privacy and flexibility.",
+      duration: "50 min",
+      price: "$80",
     },
   ],
   approach: [
@@ -151,7 +151,7 @@ export const siteContent = {
   about: {
     title: "Rehab Khan",
     body:
-      "Rehab Khan is an ACA-registered counsellor with a Master of Counselling from Monash University. She provides trauma-informed, person-centred counselling via telehealth, supporting individuals experiencing anxiety, depression, emotional distress, grief, trauma-related responses, and significant life transitions.",
+      "Rehab offers calm, structured telehealth counselling grounded in emotional safety, cultural responsiveness, and clinical integrity.",
     credentials: [
       "Master of Counselling, Monash University",
       "ACA-registered counsellor",
@@ -160,6 +160,114 @@ export const siteContent = {
       "Culturally responsive counselling for CALD communities",
       "Fluent in English, Hindi, and Urdu",
     ],
+  },
+  aboutPage: {
+    hero: {
+      eyebrow: "About",
+      title: "Clinical counselling with emotional safety and clarity.",
+      subtitle: "Clinical Counsellor | ACA Registered",
+      telehealth: "Telehealth Counselling",
+      body:
+        "A dedicated space to understand Rehab’s practice, approach, scope, and areas of support before beginning counselling.",
+      ctaSubtext: "When you’re ready",
+      cta: "Begin here",
+    },
+    galleryImages: [
+      { src: "/assets/about-gallery/ocean-calm.jpg", alt: "Calm ocean shoreline" },
+      { src: "/assets/about-gallery/sunrise-water.jpg", alt: "Soft sunrise over water" },
+      { src: "/assets/about-gallery/deep-sea.jpg", alt: "Deep blue ocean surface" },
+      { src: "/assets/about-gallery/soft-landscape.jpg", alt: "Soft natural landscape" },
+      { src: "/assets/about-gallery/green-canopy.jpg", alt: "Green forest canopy" },
+      { src: "/assets/about-gallery/earth-tones.jpg", alt: "Quiet earth-toned landscape" },
+      { src: "/assets/about-gallery/filtered-light.jpg", alt: "Light filtering through trees" },
+      { src: "/assets/about-gallery/still-lake.jpg", alt: "Still lake and mountains" },
+    ],
+    sections: [
+      {
+        eyebrow: "About",
+        title: "Clinical Counsellor | ACA Registered",
+        kicker: "Telehealth Counselling",
+        paragraphs: [
+          "Rehab Khan is an ACA-registered counsellor with a Master of Counselling from Monash University. She provides trauma-informed, person-centred counselling via telehealth, supporting individuals experiencing anxiety, depression, emotional distress, grief, and significant life transitions.",
+          "Her work focuses on both immediate challenges and longer-standing patterns that impact emotional wellbeing, relationships, and day-to-day functioning. Sessions are offered online, providing private, flexible, and consistent access to professional mental health support.",
+        ],
+      },
+      {
+        eyebrow: "Approach",
+        title: "Emotional safety, regulation, and meaningful change.",
+        paragraphs: [
+          "Her practice is grounded in trauma-informed and person-centred care, with a focus on emotional safety, regulation, and meaningful change.",
+          "She integrates evidence-informed therapies including Cognitive Behavioural Therapy (CBT), Motivational Interviewing, and Solution-Focused Therapy.",
+          "Sessions are structured yet flexible; supporting clients to understand patterns, process emotional experiences, and develop practical strategies that are realistic and sustainable over time.",
+          "She works within a counselling scope of practice and does not provide diagnosis or medical treatment.",
+        ],
+      },
+      {
+        eyebrow: "The Work",
+        title: "Collaborative, structured, and paced to the individual.",
+        paragraphs: [
+          "Therapy is collaborative, structured, and paced according to the individual.",
+          "Work may involve developing insight into recurring emotional and behavioural patterns, strengthening emotional regulation, processing the impact of past or ongoing experiences, navigating interpersonal dynamics, and adjusting to periods of change or uncertainty.",
+          "The focus is on translating awareness into practical shifts that support stability, clarity, and long-term wellbeing.",
+        ],
+      },
+      {
+        eyebrow: "Telehealth",
+        title: "Secure video or telephone counselling.",
+        paragraphs: [
+          "All sessions are delivered via secure video or telephone.",
+          "Telehealth offers discreet and accessible counselling, particularly for those who value privacy, flexibility, or the comfort of engaging from their own environment. Sessions are adapted to maintain depth, connection, and emotional containment within an online setting.",
+        ],
+      },
+      {
+        eyebrow: "Practice",
+        title: "Clinical integrity, confidentiality, and respect.",
+        paragraphs: [
+          "Her practice is grounded in clinical integrity, confidentiality, and respect.",
+          "Rehab works with individuals from diverse and culturally and linguistically diverse (CALD) backgrounds, offering culturally responsive counselling that considers each person’s identity, values, and lived experience. She is fluent in English, Hindi, and Urdu.",
+          "The therapeutic space is calm, private, and non-judgmental; balancing warmth with clinical clarity. Clients are supported to feel understood while working toward meaningful, sustainable change.",
+        ],
+      },
+    ],
+    areasTitle: "Areas of Support",
+    areasIntro:
+      "Rehab works with individuals experiencing a range of emotional, psychological, and situational challenges, including:",
+    areas: [
+      {
+        title: "Anxiety and depression",
+        text: "persistent worry, low mood, loss of motivation, and emotional distress",
+      },
+      {
+        title: "Trauma and trauma-related responses",
+        text: "including ongoing emotional impact, heightened reactivity, or difficulty feeling safe",
+      },
+      {
+        title: "Grief and loss",
+        text: "including bereavement, complex grief, and disenfranchised grief that may not be openly acknowledged or supported",
+      },
+      {
+        title: "Life transitions and adjustment",
+        text: "such as ageing, immigration, becoming a parent, empty nest experiences, perimenopause, retirement, and identity shifts",
+      },
+      {
+        title: "Stress and overwhelm",
+        text: "including burnout, emotional exhaustion, and difficulty managing competing demands",
+      },
+      {
+        title: "Emotional regulation difficulties",
+        text: "challenges with managing intense emotions, reactivity, or feeling out of control",
+      },
+      {
+        title: "Interpersonal and relational challenges",
+        text: "including communication difficulties, boundary setting, conflict, and patterns within relationships",
+      },
+      {
+        title: "Self-worth and identity concerns",
+        text: "including feelings of inadequacy, instability in sense of self, or difficulty navigating personal direction",
+      },
+    ],
+    areasClosing:
+      "Support is tailored to each individual, with consideration for personal context, cultural background, and readiness for change.",
   },
   learning: {
     title: "Resources Before You Begin",
